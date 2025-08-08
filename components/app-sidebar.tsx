@@ -18,6 +18,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const rooms = [
   {
@@ -70,17 +71,21 @@ export function AppSidebar(
               <Collapsible className="group/collapsible" key={room.name}>
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      <span>{room.name}</span>
+                    <SidebarMenuButton asChild>
+                      <Link href={`/room/${room.name}`}>
+                        <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                        <span>{room.name}</span>
+                      </Link>
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       {room.entities.map((entity) => (
                         <SidebarMenuSubItem key={entity.name}>
-                          <SidebarMenuSubButton>
-                            {entity.name}
+                          <SidebarMenuSubButton asChild>
+                            <Link href={`/entity/${entity.name}`}>
+                              {entity.name}
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}

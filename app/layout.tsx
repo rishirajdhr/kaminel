@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Adventure Game Engine",
-  description: "A modern adventure game engine built with Next.js",
+  title: "Kaminel",
+  description: "A web-based engine for creating text adventure games.",
 };
 
 export default function RootLayout({
@@ -13,7 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <div className="flex min-h-screen items-center justify-center">
+          <SidebarProvider disableKeyboardShortcut={true}>
+            <AppSidebar variant="inset" />
+            <SidebarInset>{children}</SidebarInset>
+          </SidebarProvider>
+        </div>
+      </body>
     </html>
   );
 }
