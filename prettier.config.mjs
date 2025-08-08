@@ -12,4 +12,4 @@ const config = {
   endOfLine: "lf",
 };
 
-export default config; 
+export default config;
