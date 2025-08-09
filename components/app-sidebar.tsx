@@ -19,47 +19,17 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { db } from "@/db";
 
-const rooms = [
-  {
-    name: "Dungeon",
-    description:
-      "You are in a dark dungeon. You can see a light in the distance.",
-    exits: {
-      north: null,
-      south: "Hallway",
-      east: null,
-      west: null,
-    },
-    entities: [
-      {
-        name: "Poster",
-        description:
-          "There is a poster on the wall. It says 'Welcome to Castle Murray! Wish you good luck!'",
-      },
-    ],
-  },
-  {
-    name: "Hallway",
-    description: "You are in a hallway. You can see a door to the north.",
-    exits: {
-      north: "Dungeon",
-      south: null,
-      east: null,
-      west: null,
-    },
-    entities: [
-      {
-        name: "Chandelier",
-        description: "There is a chandelier.",
-      },
-    ],
-  },
-];
-
-export function AppSidebar(
+export async function AppSidebar(
   props: Pick<ComponentProps<typeof Sidebar>, "variant">
 ) {
+  const rooms = await db.query.rooms.findMany({
+    with: {
+      entities: true,
+    },
+  });
+
   return (
     <Sidebar variant={props.variant}>
       <SidebarHeader>Adventure Game Engine</SidebarHeader>
@@ -72,7 +42,7 @@ export function AppSidebar(
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton asChild>
-                      <Link href={`/room/${room.name}`}>
+                      <Link href={`/room/${room.id}`}>
                         <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
                         <span>{room.name}</span>
                       </Link>
@@ -83,7 +53,7 @@ export function AppSidebar(
                       {room.entities.map((entity) => (
                         <SidebarMenuSubItem key={entity.name}>
                           <SidebarMenuSubButton asChild>
-                            <Link href={`/entity/${entity.name}`}>
+                            <Link href={`/entity/${entity.id}`}>
                               {entity.name}
                             </Link>
                           </SidebarMenuSubButton>
