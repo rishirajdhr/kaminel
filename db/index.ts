@@ -1,30 +1,20 @@
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import * as schema from "./schema";
 
 config({ path: ".env.local" });
 
-const connectionString = process.env.DATABASE_URL!;
-
 declare global {
   // eslint-disable-next-line no-var
-  var __postgresClient: ReturnType<typeof postgres> | undefined;
+  var __drizzleDb: ReturnType<typeof drizzle<typeof schema>> | undefined;
 }
 
-// Reuse client across HMR in development to avoid exhausting connections
-const sqlClient =
-  global.__postgresClient ??
-  postgres(connectionString, {
-    ssl: "require",
-    // With Supabase + PgBouncer, keep pool small per serverless instance
-    max: 1,
-    idle_timeout: 20,
-    connect_timeout: 10,
-  });
+const url = process.env.DATABASE_URL!;
+const db = globalThis.__drizzleDb ?? drizzle(url, { schema });
 
 if (process.env.NODE_ENV !== "production") {
-  global.__postgresClient = sqlClient;
+  // Persist DB singleton across HMR to prevent connection leaks
+  globalThis.__drizzleDb = db;
 }
 
-export const db = drizzle(sqlClient, { schema });
+export { db };
