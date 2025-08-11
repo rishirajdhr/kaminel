@@ -2,6 +2,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
@@ -17,7 +18,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/db";
 
@@ -36,6 +37,11 @@ export async function AppSidebar(
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Rooms</SidebarGroupLabel>
+          <SidebarGroupAction title="Add Room" asChild>
+            <Link href="/room/new">
+              <Plus /> <span className="sr-only">Add Room</span>
+            </Link>
+          </SidebarGroupAction>
           <SidebarMenu>
             {rooms.map((room) => (
               <Collapsible className="group/collapsible" key={room.name}>

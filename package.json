@@ -12,8 +12,10 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-collapsible": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
@@ -22,12 +24,15 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.4",
+    "drizzle-zod": "^0.8.3",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
     "postgres": "^3.4.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1"
+    "react-hook-form": "^7.62.0",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
