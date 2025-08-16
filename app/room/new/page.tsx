@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -19,9 +19,7 @@ import { AddRoomFormData, addRoomFormSchema } from "./addRoomSchema";
 import { LoaderCircle } from "lucide-react";
 import { redirect } from "next/navigation";
 
-export default function AddRoom(props: {
-  onSubmit: SubmitHandler<AddRoomFormData>;
-}) {
+export default function AddRoom() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<AddRoomFormData>({
     resolver: zodResolver(addRoomFormSchema),

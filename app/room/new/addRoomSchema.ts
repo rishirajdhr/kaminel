@@ -1,4 +1,4 @@
-import { createInsertSchema, CreateInsertSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { rooms } from "@/db/schema";
 
