@@ -1,14 +1,13 @@
-import { z } from "zod";
+import { rooms } from "@/db/schema";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-const exitSchema = z.number().nullable();
+/**
+ * Validation schema for new rooms. Ensures that input has all the fields
+ * necessary to create a new room.
+ */
+export const newRoomSchema = createInsertSchema(rooms);
 
-export const roomSchema = z.object({
-  id: z.number(),
-  createdAt: z.string(),
-  name: z.string(),
-  description: z.string(),
-  northExit: exitSchema,
-  southExit: exitSchema,
-  eastExit: exitSchema,
-  westExit: exitSchema,
-});
+/**
+ * Validation schema for a game room.
+ */
+export const roomSchema = createSelectSchema(rooms);
