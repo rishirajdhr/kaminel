@@ -1,6 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircle } from "lucide-react";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -13,28 +16,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { createRoom } from "./actions";
-import { useState } from "react";
-import { AddRoomFormData, addRoomFormSchema } from "./addRoomSchema";
-import { LoaderCircle } from "lucide-react";
-import { redirect } from "next/navigation";
+import { addRoom } from "@/features/rooms/actions";
+import { newRoomSchema } from "@/features/rooms/schema";
+import { NewRoom } from "@/features/rooms/types";
 
 export default function AddRoom() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<AddRoomFormData>({
-    resolver: zodResolver(addRoomFormSchema),
+  const form = useForm<NewRoom>({
+    resolver: zodResolver(newRoomSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
 
-  async function onSubmit(values: AddRoomFormData) {
+  async function onSubmit(values: NewRoom) {
     setIsSubmitting(true);
-    const response = await createRoom(values);
-    setIsSubmitting(false);
-    if (response.success) {
-      redirect(response.roomHref);
+    try {
+      await addRoom(values);
+    } catch (error) {
+      if (isRedirectError(error)) {
+        throw error;
+      } else {
+        console.error((error as Error).message);
+        setIsSubmitting(false);
+      }
     }
   }
 

@@ -15,7 +15,9 @@ export const roomSchema = createSelectSchema(rooms);
  * Validation schema for new rooms. Ensures that input has all the fields
  * necessary to create a new room.
  */
-export const newRoomSchema = createInsertSchema(rooms);
+export const newRoomSchema = createInsertSchema(rooms, {
+  name: (schema) => schema.min(1),
+});
 
 /**
  * Validation schema for updated rooms. Ensures that input has all the fields
