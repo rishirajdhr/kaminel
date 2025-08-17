@@ -2,6 +2,20 @@ import { relations } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { pgTable, bigint, timestamp, text } from "drizzle-orm/pg-core";
 
+export const games = pgTable("games", {
+  id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+  name: text().notNull(),
+  description: text().default("").notNull(),
+});
+
+export const gamesRelations = relations(games, ({ many }) => ({
+  rooms: many(rooms),
+  entities: many(entities),
+}));
+
 export const rooms = pgTable("rooms", {
   id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
@@ -33,6 +47,12 @@ export const rooms = pgTable("rooms", {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+  gameId: bigint("game_id", { mode: "number" })
+    .notNull()
+    .references(() => games.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
 });
 
 export const roomsRelations = relations(rooms, ({ many, one }) => ({
@@ -54,6 +74,7 @@ export const roomsRelations = relations(rooms, ({ many, one }) => ({
   }),
 
   entities: many(entities),
+  game: one(games, { fields: [rooms.gameId], references: [games.id] }),
 }));
 
 export const entities = pgTable("entities", {
@@ -67,8 +88,15 @@ export const entities = pgTable("entities", {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
+  gameId: bigint("game_id", { mode: "number" })
+    .notNull()
+    .references(() => games.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
 });
 
 export const entitiesRelations = relations(entities, ({ one }) => ({
   room: one(rooms, { fields: [entities.roomId], references: [rooms.id] }),
+  game: one(games, { fields: [entities.gameId], references: [games.id] }),
 }));
