@@ -18,8 +18,8 @@ import { redirect } from "next/navigation";
 export async function addRoom(newRoom: NewRoom) {
   const roomToInsert = newRoomSchema.parse(newRoom);
   const room = await createRoom(roomToInsert);
-  revalidatePath("/");
-  redirect(`/room/${room.id}`);
+  revalidatePath(`/game/${room.gameId}`);
+  redirect(`/game/${room.gameId}/room/${room.id}`);
 }
 
 /**
@@ -42,6 +42,6 @@ export async function updateRoomExit(
   if (room === undefined) {
     throw new Error("No room found");
   }
-  revalidatePath(`/room/${roomId}`);
+  revalidatePath(`/game/${gameId}/room/${roomId}`);
   return room;
 }

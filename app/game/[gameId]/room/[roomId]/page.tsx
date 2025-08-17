@@ -5,10 +5,13 @@ import { SelectExit } from "./select-exit";
 export default async function RoomCard({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ gameId: string; roomId: string }>;
 }) {
-  const { id } = await params;
-  const room = await getRoomById(Number.parseInt(id));
+  const { gameId, roomId } = await params;
+  const room = await getRoomById(
+    Number.parseInt(gameId),
+    Number.parseInt(roomId)
+  );
 
   if (room === undefined) {
     return <div>Room not found</div>;
@@ -37,10 +40,14 @@ export default async function RoomCard({
 
 async function RoomExit(props: { room: Room; direction: Direction }) {
   const exit: Exit = `${props.direction}Exit`;
-  const candidates = await getRoomExitCandidates(props.room.id, {
-    direction: props.direction,
-    destinationId: props.room[exit],
-  });
+  const candidates = await getRoomExitCandidates(
+    props.room.gameId,
+    props.room.id,
+    {
+      direction: props.direction,
+      destinationId: props.room[exit],
+    }
+  );
 
   return (
     <SelectExit
