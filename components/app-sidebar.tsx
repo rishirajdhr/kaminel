@@ -2,7 +2,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
@@ -33,15 +32,36 @@ export async function AppSidebar(
 
   return (
     <Sidebar variant={props.variant}>
-      <SidebarHeader>Adventure Game Engine</SidebarHeader>
+      <SidebarHeader>
+        <div className="flex flex-col items-center gap-2">
+          <span className="inline-block text-xl font-semibold tracking-tight">
+            Adventure Game Engine
+          </span>
+          <div className="flex flex-row gap-2">
+            <Link
+              className="flex w-28 flex-row items-center gap-1 rounded-sm bg-violet-700 px-4 py-2 hover:bg-violet-600 active:bg-violet-800"
+              href="/room/new"
+            >
+              <Plus className="size-3.5 stroke-3 text-white" />
+              <span className="text-xs font-semibold tracking-tight text-white">
+                Add Room
+              </span>
+            </Link>
+            <Link
+              className="flex w-28 flex-row items-center gap-1 rounded-sm border border-violet-700 px-4 py-2 transition-colors hover:bg-violet-100 active:bg-violet-300"
+              href="/entity/new"
+            >
+              <Plus className="size-3.5 stroke-3 text-violet-700" />{" "}
+              <span className="text-xs font-semibold tracking-tight text-violet-700">
+                Add Entity
+              </span>
+            </Link>
+          </div>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Rooms</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Room" asChild>
-            <Link href="/room/new">
-              <Plus /> <span className="sr-only">Add Room</span>
-            </Link>
-          </SidebarGroupAction>
           <SidebarMenu>
             {rooms.map((room) => (
               <Collapsible className="group/collapsible" key={room.name}>
