@@ -23,20 +23,25 @@ export async function addRoom(newRoom: NewRoom) {
 }
 
 /**
- * Update the exit for a room.
+ * Update the exit for a room in the game.
  *
- * @param id the room ID
+ * @param gameId the game ID
+ * @param roomId the room ID
  * @param options the configuration describing the new exit
  * @returns the updated room
  *
  * @throws If no room with the given `id` is found.
  * @throws If any database operation fails.
  */
-export async function updateRoomExit(id: number, options: ExitConfig) {
-  const room = await setRoomExit(id, options);
+export async function updateRoomExit(
+  gameId: number,
+  roomId: number,
+  options: ExitConfig
+) {
+  const room = await setRoomExit(gameId, roomId, options);
   if (room === undefined) {
     throw new Error("No room found");
   }
-  revalidatePath(`/room/${id}`);
+  revalidatePath(`/room/${roomId}`);
   return room;
 }
