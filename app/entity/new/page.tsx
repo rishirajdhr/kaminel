@@ -3,8 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -19,16 +20,47 @@ import { Textarea } from "@/components/ui/textarea";
 import { newEntitySchema } from "@/features/entities/schema";
 import { NewEntity } from "@/features/entities/types";
 import { addEntity } from "@/features/entities/actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Room } from "@/features/rooms/types";
+import { getRooms } from "@/features/rooms/api";
+
+type EntityRoomId = z.infer<typeof newEntitySchema.shape.roomId>;
+
+const transformRoomId = {
+  fromSelect: (value: string): EntityRoomId =>
+    value !== "" ? Number.parseInt(value) : null,
+  toSelect: (id: EntityRoomId): string => id?.toString() ?? "",
+};
 
 export default function AddEntity() {
+  const [isFetchingRooms, setIsFetchingRooms] = useState(false);
+  const [allRooms, setAllRooms] = useState<Room[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<NewEntity>({
     resolver: zodResolver(newEntitySchema),
     defaultValues: {
       name: "",
       description: "",
+      roomId: null,
     },
   });
+
+  useEffect(() => {
+    async function fetchAllRooms() {
+      setIsFetchingRooms(true);
+      const gameRooms = await getRooms();
+      setAllRooms(gameRooms);
+      setIsFetchingRooms(false);
+    }
+
+    fetchAllRooms();
+  }, []);
 
   async function onSubmit(values: NewEntity) {
     setIsSubmitting(true);
@@ -64,7 +96,7 @@ export default function AddEntity() {
                   <FormMessage />
                 </FormItem>
               )}
-            ></FormField>
+            />
             <FormField
               control={form.control}
               name="description"
@@ -80,7 +112,43 @@ export default function AddEntity() {
                   <FormMessage />
                 </FormItem>
               )}
-            ></FormField>
+            />
+            <FormField
+              control={form.control}
+              name="roomId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <Select
+                    onValueChange={(value) =>
+                      field.onChange(transformRoomId.fromSelect(value))
+                    }
+                    value={transformRoomId.toSelect(field.value)}
+                  >
+                    <FormControl>
+                      <div className="flex items-center gap-4">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select entity location" />
+                        </SelectTrigger>
+                        {isFetchingRooms && (
+                          <LoaderCircle className="text-muted-foreground h-4 w-4 animate-spin" />
+                        )}
+                      </div>
+                    </FormControl>
+                    <SelectContent>
+                      {allRooms.map((room) => (
+                        <SelectItem
+                          key={room.id}
+                          value={transformRoomId.toSelect(room.id)}
+                        >
+                          {room.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
             <Button disabled={isSubmitting} type="submit">
               {isSubmitting ? (
                 <>
