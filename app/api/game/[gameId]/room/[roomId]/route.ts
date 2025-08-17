@@ -1,14 +1,15 @@
-import { db } from "@/db";
+import { getRoomById } from "@/features/rooms/services";
 import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ gameId: string; roomId: string }> }
 ) {
-  const { id } = await params;
-  const room = await db.query.rooms.findFirst({
-    where: (rooms, { eq }) => eq(rooms.id, Number.parseInt(id)),
-  });
+  const { gameId, roomId } = await params;
+  const room = await getRoomById(
+    Number.parseInt(gameId),
+    Number.parseInt(roomId)
+  );
   if (room === undefined) {
     return NextResponse.json({ error: "No room found" }, { status: 404 });
   } else {

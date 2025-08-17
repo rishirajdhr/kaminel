@@ -1,8 +1,8 @@
 import { roomSchema } from "./schema";
 import type { Room } from "./types";
 
-export async function getRooms(): Promise<Room[]> {
-  const response = await fetch("/api/room/all");
+export async function getRooms(gameId: number): Promise<Room[]> {
+  const response = await fetch(`/api/game/${gameId}/room`);
   const json = await response.json();
   if (!response.ok) {
     throw new Error(json.error ?? "Unknown error");
@@ -10,8 +10,8 @@ export async function getRooms(): Promise<Room[]> {
   return roomSchema.array().parse(json.data);
 }
 
-export async function getRoom(id: number): Promise<Room> {
-  const response = await fetch(`/api/room/${id}`);
+export async function getRoom(gameId: number, roomId: number): Promise<Room> {
+  const response = await fetch(`/api/game/${gameId}/room/${roomId}`);
   const json = await response.json();
   if (!response.ok) {
     throw new Error(json.error ?? "Unknown error");
