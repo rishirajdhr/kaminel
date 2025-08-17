@@ -1,7 +1,7 @@
 import { getAllRooms } from "@/features/rooms/services";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const rooms = await getAllRooms();
     return NextResponse.json({ data: rooms }, { status: 200 });
