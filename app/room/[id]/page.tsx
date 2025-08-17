@@ -24,7 +24,7 @@ export default async function RoomCard({
         <p className="text-base font-light tracking-tight text-gray-700">
           {room.description}
         </p>
-        <div className="mt-2">
+        <div className="mt-2 w-full">
           <RoomExit room={room} direction="north" />
           <RoomExit room={room} direction="south" />
           <RoomExit room={room} direction="east" />

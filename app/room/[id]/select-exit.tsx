@@ -54,6 +54,22 @@ export function SelectExit(props: Props) {
     setIsSaving(false);
   }
 
+  async function handleClear() {
+    const prevDestinationId = destinationId;
+    setDestinationId("");
+    setIsSaving(true);
+    try {
+      await updateRoomExit(props.roomId, {
+        direction: props.direction,
+        destinationId: null,
+      });
+    } catch (error) {
+      alert((error as Error).message);
+      setDestinationId(prevDestinationId);
+    }
+    setIsSaving(false);
+  }
+
   return (
     <div className="space-y-2 py-2">
       <Label htmlFor={selectConfig.id}>{selectConfig.label}</Label>
@@ -70,7 +86,7 @@ export function SelectExit(props: Props) {
             ))}
           </SelectContent>
         </Select>
-        {showSaveBtn && (
+        {showSaveBtn ? (
           <Button disabled={isSaving} onClick={handleSave}>
             {isSaving ? (
               <>
@@ -81,6 +97,23 @@ export function SelectExit(props: Props) {
               </>
             ) : (
               <span>Save</span>
+            )}
+          </Button>
+        ) : (
+          <Button
+            disabled={isSaving || destinationId === ""}
+            variant="secondary"
+            onClick={handleClear}
+          >
+            {isSaving ? (
+              <>
+                <span>
+                  <LoaderCircle className="animate-spin" />
+                </span>
+                <span>Clearing...</span>
+              </>
+            ) : (
+              <span>Clear</span>
             )}
           </Button>
         )}
