@@ -22,6 +22,16 @@ export async function createRoom(newRoom: NewRoom): Promise<Room> {
 }
 
 /**
+ * Get all the rooms in a game.
+ *
+ * @returns a list of rooms in the game
+ */
+export async function getAllRooms(): Promise<Room[]> {
+  const rooms = await db.query.rooms.findMany();
+  return rooms;
+}
+
+/**
  * Get a room by its ID.
  *
  * @param id the room ID
