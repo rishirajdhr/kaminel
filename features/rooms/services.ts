@@ -7,11 +7,11 @@ import type {
   Room,
   UpdatedRoom,
 } from "@/features/rooms/types";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { entranceByDirection } from "./utils";
 
 /**
- * Create a new room.
+ * Create a new room for a game.
  *
  * @param newRoom the data of the new room
  * @returns the created room
@@ -24,51 +24,64 @@ export async function createRoom(newRoom: NewRoom): Promise<Room> {
 /**
  * Get all the rooms in a game.
  *
+ * @param gameId the game ID
  * @returns a list of rooms in the game
  */
-export async function getAllRooms(): Promise<Room[]> {
-  const rooms = await db.query.rooms.findMany();
-  return rooms;
+export async function getAllRooms(gameId: number): Promise<Room[]> {
+  const allRooms = await db.query.rooms.findMany({
+    where: (rooms, { eq }) => eq(rooms.gameId, gameId),
+  });
+  return allRooms;
 }
 
 /**
- * Get a room by its ID.
+ * Get a game room by its ID.
  *
- * @param id the room ID
+ * @param gameId the game ID
+ * @param roomId the room ID
  * @returns the room if found, `undefined` otherwise
  */
-export async function getRoomById(id: number): Promise<Room | undefined> {
+export async function getRoomById(
+  gameId: number,
+  roomId: number
+): Promise<Room | undefined> {
   const room = await db.query.rooms.findFirst({
-    where: (rooms, { eq }) => eq(rooms.id, id),
+    where: (rooms, { and, eq }) =>
+      and(eq(rooms.gameId, gameId), eq(rooms.id, roomId)),
   });
   return room;
 }
 
 /**
- * Find the rooms that can be linked to a room exit.
+ * Find the rooms in a game that can be linked to a room exit.
  *
- * @param id the room ID
+ * @param gameId the game ID
+ * @param roomId the room ID
  * @param options the exit configuration
  * @returns list of room candidates
  */
 export async function getRoomExitCandidates(
-  id: number,
+  gameId: number,
+  roomId: number,
   options: ExitConfig
 ): Promise<Room[]> {
-  const room = await getRoomById(id);
+  const room = await getRoomById(gameId, roomId);
   if (room === undefined) {
     return [];
   }
 
   const entrance = entranceByDirection[options.direction];
   let candidates = await db.query.rooms.findMany({
-    where: (rooms, { eq, isNull, or }) =>
-      or(isNull(rooms[entrance]), eq(rooms.id, id)),
+    where: (rooms, { and, eq, isNull, or }) =>
+      and(
+        eq(rooms.gameId, gameId),
+        or(isNull(rooms[entrance]), eq(rooms.id, roomId))
+      ),
   });
 
   const exit: Exit = `${options.direction}Exit`;
   if (room[exit] !== null) {
-    const destination = await getRoomById(room[exit]);
+    const destination = await getRoomById(gameId, room[exit]);
     if (destination === undefined) {
       return [];
     }
@@ -77,7 +90,7 @@ export async function getRoomExitCandidates(
 
   const loopsDisabled = !options.loops;
   if (loopsDisabled) {
-    candidates = candidates.filter((c) => c.id !== id);
+    candidates = candidates.filter((c) => c.id !== roomId);
   }
 
   return candidates;
@@ -87,22 +100,24 @@ export async function getRoomExitCandidates(
  * Set the room exit destination. Clears the exit if `options.destinationId` is
  * set to `null`.
  *
- * @param id the room ID
+ * @param gameId the game ID
+ * @param roomId the room ID
  * @param options the exit configuration
  * @returns the updated room
  */
 export async function setRoomExit(
-  id: number,
+  gameId: number,
+  roomId: number,
   options: ExitConfig
 ): Promise<Room | undefined> {
-  const room = await getRoomById(id);
+  const room = await getRoomById(gameId, roomId);
   if (room === undefined) {
     return room;
   }
 
   const entrance = entranceByDirection[options.direction];
   if (options.destinationId !== null) {
-    const destination = await getRoomById(options.destinationId);
+    const destination = await getRoomById(gameId, options.destinationId);
     if (destination === undefined || destination[entrance] !== null) {
       return room;
     }
@@ -116,20 +131,24 @@ export async function setRoomExit(
       await tx
         .update(rooms)
         .set({ [entrance]: null })
-        .where(eq(rooms.id, existingDestination));
+        .where(
+          and(eq(rooms.gameId, gameId), eq(rooms.id, existingDestination))
+        );
     }
 
     if (options.destinationId !== null) {
       await tx
         .update(rooms)
-        .set({ [entrance]: id })
-        .where(eq(rooms.id, options.destinationId));
+        .set({ [entrance]: roomId })
+        .where(
+          and(eq(rooms.gameId, gameId), eq(rooms.id, options.destinationId))
+        );
     }
 
     const result = await tx
       .update(rooms)
       .set({ [exit]: options.destinationId })
-      .where(eq(rooms.id, id))
+      .where(and(eq(rooms.gameId, gameId), eq(rooms.id, roomId)))
       .returning();
     return result;
   });
@@ -139,18 +158,20 @@ export async function setRoomExit(
 /**
  * Update a room by its ID.
  *
- * @param id the room ID
+ * @param gameId the game ID
+ * @param roomId the room ID
  * @param updatedRoom the updated data for the room
  * @returns the updated room
  */
 export async function updateRoomById(
-  id: number,
+  gameId: number,
+  roomId: number,
   updatedRoom: UpdatedRoom
 ): Promise<Room | undefined> {
   const [room] = await db
     .update(rooms)
     .set(updatedRoom)
-    .where(eq(rooms.id, id))
+    .where(and(eq(rooms.gameId, gameId), eq(rooms.id, roomId)))
     .returning();
   return room;
 }
