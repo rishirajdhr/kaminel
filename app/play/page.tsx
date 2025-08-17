@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getRoom } from "@/features/rooms/api";
-import { Room } from "@/features/rooms/types";
+import { Direction, Exit, Room } from "@/features/rooms/types";
 import { useEffect, useState } from "react";
 
 export default function Play() {
@@ -26,14 +26,14 @@ export default function Play() {
     fetchRoom();
   }, []);
 
-  async function handleMove(direction: "north" | "south" | "east" | "west") {
+  async function handleMove(direction: Direction) {
     if (room === null) return;
-    const exitKey: `${typeof direction}Exit` = `${direction}Exit`;
-    if (room[exitKey] === null) {
+    const exit: Exit = `${direction}Exit`;
+    if (room[exit] === null) {
       alert(`There is no room to the ${direction}!`);
     } else {
       try {
-        const nextRoom = await getRoom(room[exitKey]);
+        const nextRoom = await getRoom(room[exit]);
         setRoom(nextRoom);
       } catch (error) {
         alert((error as Error).message);
