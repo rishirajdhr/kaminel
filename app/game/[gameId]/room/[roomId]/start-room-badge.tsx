@@ -20,9 +20,13 @@ export function StartRoomBadge(props: { game: Game; room: Room }) {
   }
 
   return props.game.startRoomId === props.room.id ? (
-    <div className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-green-200 bg-green-100 px-4 py-2 text-sm font-medium whitespace-nowrap text-green-900 shadow-xs outline-none">
-      Starting Room
-    </div>
+    <Button
+      variant="secondary"
+      className="rounded-full bg-green-100 text-sm text-green-800 hover:bg-green-100"
+      asChild
+    >
+      <span>Starting Room</span>
+    </Button>
   ) : (
     <Button
       disabled={isMarking}

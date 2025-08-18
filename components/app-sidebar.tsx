@@ -21,6 +21,7 @@ import {
 import { ChevronRight, House, Plus } from "lucide-react";
 import Link from "next/link";
 import { getAllRoomsWithEntities } from "@/features/rooms/services";
+import { Button } from "./ui/button";
 
 type Props = Pick<ComponentProps<typeof Sidebar>, "variant"> & {
   gameId: number;
@@ -39,24 +40,18 @@ export async function AppSidebar(props: Props) {
             </span>
           </Link>
           <div className="flex flex-row gap-2">
-            <Link
-              className="flex w-28 flex-row items-center gap-1 rounded-sm bg-violet-700 px-4 py-2 hover:bg-violet-600 active:bg-violet-800"
-              href={`/game/${props.gameId}/room/new`}
-            >
-              <Plus className="size-3.5 stroke-3 text-white" />
-              <span className="text-xs font-semibold tracking-tight text-white">
-                Add Room
-              </span>
-            </Link>
-            <Link
-              className="flex w-28 flex-row items-center gap-1 rounded-sm border border-violet-700 px-4 py-2 transition-colors hover:bg-violet-100 active:bg-violet-300"
-              href={`/game/${props.gameId}/entity/new`}
-            >
-              <Plus className="size-3.5 stroke-3 text-violet-700" />{" "}
-              <span className="text-xs font-semibold tracking-tight text-violet-700">
-                Add Entity
-              </span>
-            </Link>
+            <Button variant="outline" size="sm" asChild>
+              <Link className="" href={`/game/${props.gameId}/room/new`}>
+                <Plus className="stroke-3" />
+                <span className="">Add Room</span>
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link className="" href={`/game/${props.gameId}/entity/new`}>
+                <Plus className="stroke-3" />{" "}
+                <span className="">Add Entity</span>
+              </Link>
+            </Button>
           </div>
         </div>
       </SidebarHeader>
