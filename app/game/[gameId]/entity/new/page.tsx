@@ -64,7 +64,7 @@ export default function AddEntity() {
     }
 
     fetchAllRooms();
-  }, []);
+  }, [gameId]);
 
   async function onSubmit(values: NewEntity) {
     setIsSubmitting(true);
