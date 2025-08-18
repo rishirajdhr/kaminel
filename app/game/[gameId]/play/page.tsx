@@ -1,20 +1,23 @@
-import { getGameById } from "@/features/games/services";
-import { getRoomById } from "@/features/rooms/services";
-import { PlayView } from "./play-view";
-import { BadgeAlert } from "lucide-react";
+"use client";
 
-export default async function PlayPage({
-  params,
-}: {
-  params: Promise<{ gameId: string }>;
-}) {
-  const { gameId } = await params;
-  const game = await getGameById(Number.parseInt(gameId));
-  if (game === undefined) {
-    return <div>No game found</div>;
+import { useState } from "react";
+import { BadgeAlert } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useGame } from "@/features/games/hooks";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+export default function PlayPage() {
+  const { gameId } = useParams<{ gameId: string }>();
+  const game = useGame(Number.parseInt(gameId));
+  const [command, setCommand] = useState("");
+
+  if (!game.isReady) {
+    return <div>Loading...</div>;
   }
 
-  if (game.startRoomId === null) {
+  if (game.currentRoom === null) {
     return (
       <div className="grid h-full w-full place-items-center">
         <div className="relative flex w-xl flex-col items-start gap-4 overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-emerald-600">
@@ -28,10 +31,34 @@ export default async function PlayPage({
     );
   }
 
-  const startRoom = await getRoomById(game.id, game.startRoomId);
-  if (startRoom === undefined) {
-    return <div>Invalid start room ID</div>;
+  function handleRun() {
+    setCommand("");
+    try {
+      game.handleCommand(command);
+    } catch (error) {
+      alert((error as Error).message);
+    }
   }
 
-  return <PlayView startRoom={startRoom} />;
+  return (
+    <div className="grid h-full w-full place-items-center">
+      <div className="relative flex w-xl flex-col items-start gap-4 overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-emerald-600">
+        <div className="text-2xl font-semibold tracking-tight">Play Game</div>
+        <div>You are in: {game.currentRoom.name}</div>
+        <div>
+          <Label className="pb-2" htmlFor="command">
+            Enter command
+          </Label>
+          <span className="flex flex-row gap-2">
+            <Input
+              id="command"
+              value={command}
+              onChange={(e) => setCommand(e.target.value)}
+            />
+            <Button onClick={handleRun}>Run</Button>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 }
