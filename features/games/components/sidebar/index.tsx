@@ -6,28 +6,19 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ComponentProps } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronRight, House, Plus } from "lucide-react";
+import { House, Plus } from "lucide-react";
 import Link from "next/link";
 import { getAllRoomsWithEntities } from "@/features/rooms/services";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import { RoomItem } from "./room-item";
 
 type Props = Pick<ComponentProps<typeof Sidebar>, "variant"> & {
   gameId: number;
 };
 
-export async function AppSidebar(props: Props) {
+export async function GameSidebar(props: Props) {
   const rooms = await getAllRoomsWithEntities(props.gameId);
 
   return (
@@ -66,33 +57,7 @@ export async function AppSidebar(props: Props) {
           </SidebarGroupAction>
           <SidebarMenu>
             {rooms.map((room) => (
-              <Collapsible className="group/collapsible" key={room.name}>
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton asChild>
-                      <Link href={`/game/${room.gameId}/room/${room.id}`}>
-                        <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                        <span>{room.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {room.entities.map((entity) => (
-                        <SidebarMenuSubItem key={entity.name}>
-                          <SidebarMenuSubButton asChild>
-                            <Link
-                              href={`/game/${entity.gameId}/entity/${entity.id}`}
-                            >
-                              {entity.name}
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
+              <RoomItem key={room.id} room={room} />
             ))}
           </SidebarMenu>
         </SidebarGroup>
