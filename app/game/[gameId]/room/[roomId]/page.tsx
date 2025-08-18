@@ -1,8 +1,8 @@
 import { getRoomById, getRoomExitCandidates } from "@/features/rooms/services";
 import type { Direction, Exit, Room } from "@/features/rooms/types";
 import { SelectExit } from "./select-exit";
-import { Button } from "@/components/ui/button";
 import { getGameById } from "@/features/games/services";
+import { StartRoomBadge } from "./start-room-badge";
 
 export default async function RoomCard({
   params,
@@ -27,21 +27,13 @@ export default async function RoomCard({
 
   return (
     <div className="grid h-full w-full place-items-center">
-      <div className="relative flex w-md flex-col items-start overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-indigo-600">
+      <div className="relative flex w-lg flex-col items-start overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-indigo-600">
         <div className="text-sm font-semibold text-indigo-600">Room</div>
         <div className="flex w-full flex-row items-center justify-between pt-1 pb-2">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">
             {room.name}
           </h1>
-          {game.startRoomId === room.id ? (
-            <div className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-green-200 bg-green-100 px-4 py-2 text-sm font-medium whitespace-nowrap text-green-900 shadow-xs outline-none">
-              Starting Room
-            </div>
-          ) : (
-            <Button className="rounded-full" variant="outline">
-              Mark as Start Room
-            </Button>
-          )}
+          <StartRoomBadge game={game} room={room} />
         </div>
         <div>
           <p className="text-base font-light tracking-tight text-gray-700">
