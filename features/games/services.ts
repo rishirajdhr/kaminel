@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { Game } from "./types";
+import { Game, GameGraph } from "./types";
 import { games } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -24,6 +24,26 @@ export async function getGameById(gameId: number): Promise<Game | undefined> {
     where: (games, { eq }) => eq(games.id, gameId),
   });
   return game;
+}
+
+/**
+ * Get a game's graph by its ID.
+ *
+ * @param gameId the game ID
+ * @returns the game graph if found, `undefined` otherwise
+ */
+export async function getGameGraphById(
+  gameId: number
+): Promise<GameGraph | undefined> {
+  const gameGraph = await db.query.games.findFirst({
+    where: (games, { eq }) => eq(games.id, gameId),
+    with: {
+      rooms: {
+        with: { entities: true },
+      },
+    },
+  });
+  return gameGraph;
 }
 
 /**
