@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -39,6 +40,8 @@ const transformRoomId = {
 };
 
 export default function AddEntity() {
+  const params = useParams<{ gameId: string }>();
+  const gameId = useMemo(() => Number.parseInt(params.gameId), [params.gameId]);
   const [isFetchingRooms, setIsFetchingRooms] = useState(false);
   const [allRooms, setAllRooms] = useState<Room[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,13 +51,14 @@ export default function AddEntity() {
       name: "",
       description: "",
       roomId: null,
+      gameId: gameId,
     },
   });
 
   useEffect(() => {
     async function fetchAllRooms() {
       setIsFetchingRooms(true);
-      const gameRooms = await getRooms();
+      const gameRooms = await getRooms(gameId);
       setAllRooms(gameRooms);
       setIsFetchingRooms(false);
     }
