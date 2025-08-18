@@ -32,9 +32,11 @@ export async function AppSidebar(props: Props) {
     <Sidebar variant={props.variant}>
       <SidebarHeader>
         <div className="flex flex-col items-center gap-2">
-          <span className="inline-block text-xl font-semibold tracking-tight">
-            Adventure Game Engine
-          </span>
+          <Link href="/">
+            <span className="inline-block text-xl font-semibold tracking-tight">
+              Adventure Game Engine
+            </span>
+          </Link>
           <div className="flex flex-row gap-2">
             <Link
               className="flex w-28 flex-row items-center gap-1 rounded-sm bg-violet-700 px-4 py-2 hover:bg-violet-600 active:bg-violet-800"
