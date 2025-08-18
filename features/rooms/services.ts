@@ -35,6 +35,22 @@ export async function getAllRooms(gameId: number): Promise<Room[]> {
 }
 
 /**
+ * Get all the game rooms with their entities.
+ *
+ * @param gameId the game ID
+ * @returns a list of rooms in the game, each with its entities
+ */
+export async function getAllRoomsWithEntities(gameId: number) {
+  const roomsWithEntities = await db.query.rooms.findMany({
+    where: (rooms, { eq }) => eq(rooms.gameId, gameId),
+    with: {
+      entities: true,
+    },
+  });
+  return roomsWithEntities;
+}
+
+/**
  * Get a game room by its ID.
  *
  * @param gameId the game ID

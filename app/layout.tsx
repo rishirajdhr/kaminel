@@ -1,7 +1,4 @@
 import type { Metadata } from "next";
-
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,10 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <div className="flex min-h-screen items-center justify-center">
-          <SidebarProvider disableKeyboardShortcut={true}>
-            <AppSidebar variant="inset" />
-            <SidebarInset>{children}</SidebarInset>
-          </SidebarProvider>
+          {children}
         </div>
       </body>
     </html>
