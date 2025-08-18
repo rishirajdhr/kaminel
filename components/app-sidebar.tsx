@@ -2,6 +2,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
@@ -17,7 +18,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, House, Plus } from "lucide-react";
 import Link from "next/link";
 import { getAllRoomsWithEntities } from "@/features/rooms/services";
 
@@ -62,6 +63,12 @@ export async function AppSidebar(props: Props) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Rooms</SidebarGroupLabel>
+          <SidebarGroupAction title="Game Landing Page" asChild>
+            <Link href={`/game/${props.gameId}`}>
+              <House className="text-gray-600" />{" "}
+              <span className="sr-only">Game Landing Page</span>
+            </Link>
+          </SidebarGroupAction>
           <SidebarMenu>
             {rooms.map((room) => (
               <Collapsible className="group/collapsible" key={room.name}>
