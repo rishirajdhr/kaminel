@@ -1,22 +1,27 @@
 "use client";
 
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getRoom } from "@/features/rooms/api";
 import { Direction, Exit, Room } from "@/features/rooms/types";
-import { useEffect, useState } from "react";
+
+const INTIIAL_ROOM_ID = 4;
 
 export default function Play() {
+  const params = useParams<{ gameId: string }>();
+  const gameId = useMemo(() => Number.parseInt(params.gameId), [params.gameId]);
   const [room, setRoom] = useState<Room | null>(null);
   const [command, setCommand] = useState("");
 
   useEffect(() => {
-    const initialRoomId = 4;
+    const initialRoomId = INTIIAL_ROOM_ID;
 
     async function fetchRoom() {
       try {
-        const nextRoom = await getRoom(initialRoomId);
+        const nextRoom = await getRoom(gameId, initialRoomId);
         setRoom(nextRoom);
       } catch (error) {
         console.error(error);
@@ -24,7 +29,7 @@ export default function Play() {
     }
 
     fetchRoom();
-  }, []);
+  }, [gameId]);
 
   async function handleMove(direction: Direction) {
     if (room === null) return;
@@ -33,7 +38,7 @@ export default function Play() {
       alert(`There is no room to the ${direction}!`);
     } else {
       try {
-        const nextRoom = await getRoom(room[exit]);
+        const nextRoom = await getRoom(gameId, room[exit]);
         setRoom(nextRoom);
       } catch (error) {
         alert((error as Error).message);
