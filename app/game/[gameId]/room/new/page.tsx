@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -21,12 +22,14 @@ import { newRoomSchema } from "@/features/rooms/schema";
 import { NewRoom } from "@/features/rooms/types";
 
 export default function AddRoom() {
+  const params = useParams<{ gameId: string }>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<NewRoom>({
     resolver: zodResolver(newRoomSchema),
     defaultValues: {
       name: "",
       description: "",
+      gameId: Number.parseInt(params.gameId),
     },
   });
 

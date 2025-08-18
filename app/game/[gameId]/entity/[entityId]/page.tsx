@@ -1,14 +1,15 @@
-import { db } from "@/db";
+import { getEntityById } from "@/features/entities/services";
 
 export default async function Entity({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ gameId: string; entityId: string }>;
 }) {
-  const { id } = await params;
-  const entity = await db.query.entities.findFirst({
-    where: (entities, { eq }) => eq(entities.id, Number.parseInt(id)),
-  });
+  const { gameId, entityId } = await params;
+  const entity = await getEntityById(
+    Number.parseInt(gameId),
+    Number.parseInt(entityId)
+  );
 
   if (entity === undefined) {
     return <div>Entity not found</div>;

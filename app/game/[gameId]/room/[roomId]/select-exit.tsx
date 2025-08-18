@@ -1,5 +1,8 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,8 +14,6 @@ import {
 } from "@/components/ui/select";
 import { updateRoomExit } from "@/features/rooms/actions";
 import type { Direction, Room } from "@/features/rooms/types";
-import { LoaderCircle } from "lucide-react";
-import { useMemo, useState } from "react";
 
 export type Props = {
   roomId: number;
@@ -22,6 +23,7 @@ export type Props = {
 };
 
 export function SelectExit(props: Props) {
+  const params = useParams<{ gameId: string; roomId: string }>();
   const [destinationId, setDestinationId] = useState<string>(
     props.originalDestinationId?.toString() ?? ""
   );
@@ -42,9 +44,10 @@ export function SelectExit(props: Props) {
 
   async function handleSave() {
     setIsSaving(true);
+    const gameId = Number.parseInt(params.gameId);
     const exitId = destinationId !== "" ? Number.parseInt(destinationId) : null;
     try {
-      await updateRoomExit(props.roomId, {
+      await updateRoomExit(gameId, props.roomId, {
         direction: props.direction,
         destinationId: exitId,
       });
@@ -59,7 +62,8 @@ export function SelectExit(props: Props) {
     setDestinationId("");
     setIsSaving(true);
     try {
-      await updateRoomExit(props.roomId, {
+      const gameId = Number.parseInt(params.gameId);
+      await updateRoomExit(gameId, props.roomId, {
         direction: props.direction,
         destinationId: null,
       });
