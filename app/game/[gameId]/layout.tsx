@@ -1,5 +1,5 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { GameSidebar } from "@/features/games/components/sidebar";
 
 export default async function GameLayout({
   children,
@@ -11,7 +11,7 @@ export default async function GameLayout({
   const { gameId } = await params;
   return (
     <SidebarProvider disableKeyboardShortcut={true}>
-      <AppSidebar gameId={Number.parseInt(gameId)} variant="inset" />
+      <GameSidebar gameId={Number.parseInt(gameId)} variant="inset" />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );

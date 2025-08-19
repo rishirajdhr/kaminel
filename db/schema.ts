@@ -9,6 +9,13 @@ export const games = pgTable("games", {
     .notNull(),
   name: text().notNull(),
   description: text().default("").notNull(),
+  startRoomId: bigint("start_room_id", { mode: "number" }).references(
+    (): AnyPgColumn => rooms.id,
+    {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }
+  ),
 });
 
 export const gamesRelations = relations(games, ({ many }) => ({
