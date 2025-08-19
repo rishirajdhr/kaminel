@@ -12,11 +12,19 @@ export function useGame(gameId: number) {
       const gameModel = new GameModel(gameId);
       await gameModel.init();
       setModel(gameModel);
+      return gameModel;
     }
 
     if (model === null || model.gameId !== gameId) {
       setModel(null);
-      setupGameModel();
+      setupGameModel().then((gameModel) => {
+        // Execute a LOOK command on load so player knows where they are
+        const result = gameModel.run("look");
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { from: "system", content: result.message },
+        ]);
+      });
     }
   }, []);
 
