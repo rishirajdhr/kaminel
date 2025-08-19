@@ -1,13 +1,9 @@
 import { GameModel } from "../model";
 
-export type CommandResult =
-  | {
-      success: true;
-    }
-  | {
-      success: false;
-      message: string;
-    };
+export type CommandResult = {
+  success: boolean;
+  message: string;
+};
 
 export abstract class Command {
   verb: string;

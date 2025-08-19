@@ -50,6 +50,6 @@ export class MoveCommand extends Command {
     }
 
     this.model.currentRoom = destination;
-    return { success: true };
+    return { success: true, message: `You are in the ${destination.name}` };
   }
 }
