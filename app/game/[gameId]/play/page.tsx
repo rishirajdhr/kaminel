@@ -22,9 +22,6 @@ export default function PlayPage() {
   const { gameId } = useParams<{ gameId: string }>();
   const game = useGame(Number.parseInt(gameId));
   const [command, setCommand] = useState("");
-  const [messages, setMessages] = useState<
-    { from: "player" | "system"; content: string }[]
-  >([]);
 
   if (game.model === null) {
     return <div>Model doesn't exist</div>;
@@ -49,24 +46,8 @@ export default function PlayPage() {
   }
 
   function handleRun() {
+    game.handleCommand(command);
     setCommand("");
-    try {
-      game.handleCommand(command);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { from: "player", content: command },
-        {
-          from: "system",
-          content: `You are in ${game.model?.currentRoom?.name ?? null}`,
-        },
-      ]);
-    } catch (error) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { from: "player", content: command },
-        { from: "system", content: (error as Error).message },
-      ]);
-    }
   }
 
   function handleEnter(e: KeyboardEvent<HTMLInputElement>) {
@@ -91,7 +72,7 @@ export default function PlayPage() {
         </CardHeader>
         <CardContent className="h-80 overflow-scroll bg-gray-300/15 py-6 inset-shadow-xs">
           <div className="flex flex-col justify-start gap-2">
-            {messages.map((message, index) => (
+            {game.messages.map((message, index) => (
               <div
                 className={cn(
                   "max-w-8/12 rounded-sm px-4 py-2 font-mono text-sm shadow-xs",

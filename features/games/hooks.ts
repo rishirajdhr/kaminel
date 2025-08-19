@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { GameModel } from "./model";
 
+type Message = { from: "player" | "system"; content: string };
+
 export function useGame(gameId: number) {
   const [model, setModel] = useState<GameModel | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     async function setupGameModel() {
@@ -23,12 +26,15 @@ export function useGame(gameId: number) {
         throw new Error("No model found");
       }
       const result = model.run(command);
-      if (!result.success) {
-        throw new Error(result.message);
-      }
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { from: "player", content: command },
+        { from: "system", content: result.message },
+      ]);
+      return result;
     },
     [model]
   );
 
-  return { handleCommand, model };
+  return { handleCommand, messages, model };
 }
