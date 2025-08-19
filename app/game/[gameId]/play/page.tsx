@@ -82,7 +82,9 @@ export default function PlayPage() {
                 )}
                 key={`${message}-${index}`}
               >
-                {message.content}
+                {message.content.split("\n").map((line, index) => (
+                  <p key={index}>{line}</p>
+                ))}
               </div>
             ))}
           </div>

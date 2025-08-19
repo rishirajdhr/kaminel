@@ -2,9 +2,13 @@ import { Entity } from "../entities/types";
 import { Room } from "../rooms/types";
 import { getGameGraph } from "./api";
 import { Command, CommandResult } from "./commands/command";
+import { LookCommand } from "./commands/look";
 import { MoveCommand } from "./commands/move";
 
-const availableCommands: (new (model: GameModel) => Command)[] = [MoveCommand];
+const availableCommands: (new (model: GameModel) => Command)[] = [
+  LookCommand,
+  MoveCommand,
+];
 
 export class GameModel {
   gameId: number;
