@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { BadgeAlert, SendHorizonal } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useGame } from "@/features/games/hooks";
@@ -20,6 +20,11 @@ export default function PlayPage() {
   const { gameId } = useParams<{ gameId: string }>();
   const game = useGame(Number.parseInt(gameId));
   const [command, setCommand] = useState("");
+  const messagesBottomAnchor = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesBottomAnchor.current?.scrollIntoView({ behavior: "smooth" });
+  }, [game.messages]);
 
   if (game.model === null) {
     return <div>Model does not exist</div>;
@@ -70,7 +75,7 @@ export default function PlayPage() {
           <CardTitle>{game.model.name}</CardTitle>
           <CardDescription>{game.model.description}</CardDescription>
         </CardHeader>
-        <CardContent className="h-80 overflow-scroll bg-gray-300/15 py-6 inset-shadow-xs">
+        <CardContent className="h-[672px] overflow-y-auto bg-gray-300/15 py-6 inset-shadow-xs">
           <div className="flex flex-col justify-start gap-2">
             {game.messages.map((message, index) => (
               <div
@@ -87,6 +92,7 @@ export default function PlayPage() {
                 ))}
               </div>
             ))}
+            <div ref={messagesBottomAnchor} />
           </div>
         </CardContent>
         <CardFooter className="gap-2 border-t border-gray-600/20 bg-gray-50/5 pb-6">
