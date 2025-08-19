@@ -22,7 +22,7 @@ export default function PlayPage() {
   const [command, setCommand] = useState("");
 
   if (game.model === null) {
-    return <div>Model doesn't exist</div>;
+    return <div>Model does not exist</div>;
   }
 
   if (game.model.status === "pending") {
