@@ -35,7 +35,10 @@ export class MoveCommand extends Command {
     }
 
     const [, direction] = command.split(" ");
-    const exit = directionSchema
+    const exit = z
+      .string()
+      .transform((val) => val.toLowerCase())
+      .pipe(directionSchema)
       .transform((d): Exit => `${d}Exit`)
       .parse(direction);
 
