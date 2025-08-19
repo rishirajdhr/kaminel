@@ -17,10 +17,6 @@ export function useGame(gameId: number) {
     }
   }, []);
 
-  const isReady = model !== null;
-
-  const currentRoom = model?.currentRoom ?? null;
-
   const handleCommand = useCallback(
     (command: string) => {
       if (model == null) {
@@ -34,5 +30,5 @@ export function useGame(gameId: number) {
     [model]
   );
 
-  return { currentRoom, handleCommand, isReady };
+  return { handleCommand, model };
 }

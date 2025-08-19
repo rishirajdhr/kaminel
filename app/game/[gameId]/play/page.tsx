@@ -1,23 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import { BadgeAlert } from "lucide-react";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { BadgeAlert, SendHorizonal } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useGame } from "@/features/games/hooks";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function PlayPage() {
   const { gameId } = useParams<{ gameId: string }>();
   const game = useGame(Number.parseInt(gameId));
   const [command, setCommand] = useState("");
+  const [messages, setMessages] = useState<
+    { from: "player" | "system"; content: string }[]
+  >([]);
 
-  if (!game.isReady) {
+  if (game.model === null) {
+    return <div>Model doesn't exist</div>;
+  }
+
+  if (game.model.status === "pending") {
     return <div>Loading...</div>;
   }
 
-  if (game.currentRoom === null) {
+  if (game.model.currentRoom === null) {
     return (
       <div className="grid h-full w-full place-items-center">
         <div className="relative flex w-xl flex-col items-start gap-4 overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-emerald-600">
@@ -35,30 +52,75 @@ export default function PlayPage() {
     setCommand("");
     try {
       game.handleCommand(command);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { from: "player", content: command },
+        {
+          from: "system",
+          content: `You are in ${game.model?.currentRoom?.name ?? null}`,
+        },
+      ]);
     } catch (error) {
-      alert((error as Error).message);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { from: "player", content: command },
+        { from: "system", content: (error as Error).message },
+      ]);
+    }
+  }
+
+  function handleEnter(e: KeyboardEvent<HTMLInputElement>) {
+    if (
+      command.trim() !== "" &&
+      e.key === "Enter" &&
+      !e.ctrlKey &&
+      !e.shiftKey &&
+      !e.metaKey &&
+      !e.altKey
+    ) {
+      handleRun();
     }
   }
 
   return (
     <div className="grid h-full w-full place-items-center">
-      <div className="relative flex w-xl flex-col items-start gap-4 overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-emerald-600">
-        <div className="text-2xl font-semibold tracking-tight">Play Game</div>
-        <div>You are in: {game.currentRoom.name}</div>
-        <div>
-          <Label className="pb-2" htmlFor="command">
-            Enter command
-          </Label>
-          <span className="flex flex-row gap-2">
-            <Input
-              id="command"
-              value={command}
-              onChange={(e) => setCommand(e.target.value)}
-            />
-            <Button onClick={handleRun}>Run</Button>
-          </span>
-        </div>
-      </div>
+      <Card className="w-xl gap-0 py-0">
+        <CardHeader className="border-b border-gray-600/20 bg-gray-50/5 pt-6">
+          <CardTitle>{game.model.name}</CardTitle>
+          <CardDescription>{game.model.description}</CardDescription>
+        </CardHeader>
+        <CardContent className="h-80 overflow-scroll bg-gray-300/15 py-6 inset-shadow-xs">
+          <div className="flex flex-col justify-start gap-2">
+            {messages.map((message, index) => (
+              <div
+                className={cn(
+                  "max-w-8/12 rounded-sm px-4 py-2 font-mono text-sm shadow-xs",
+                  message.from === "system"
+                    ? "self-start border border-gray-400/25 bg-white"
+                    : "self-end border-gray-600/75 bg-gray-200"
+                )}
+                key={`${message}-${index}`}
+              >
+                {message.content}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter className="gap-2 border-t border-gray-600/20 bg-gray-50/5 pb-6">
+          <Input
+            id="command"
+            className="font-mono"
+            placeholder="Enter Command"
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            onKeyDown={handleEnter}
+          />
+          <Button onClick={handleRun}>
+            <SendHorizonal />
+            <span>Send</span>
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
