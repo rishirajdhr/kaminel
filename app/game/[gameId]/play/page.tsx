@@ -1,19 +1,17 @@
 "use client";
 
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useState } from "react";
 import { BadgeAlert, SendHorizonal } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useGame } from "@/features/games/hooks";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
