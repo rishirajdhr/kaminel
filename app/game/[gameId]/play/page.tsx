@@ -44,13 +44,15 @@ export default function PlayPage() {
   }
 
   function handleRun() {
-    game.handleCommand(command);
+    const sanitizedCommand = command.trim();
+    if (sanitizedCommand === "") return;
+
+    game.handleCommand(sanitizedCommand);
     setCommand("");
   }
 
   function handleEnter(e: KeyboardEvent<HTMLInputElement>) {
     if (
-      command.trim() !== "" &&
       e.key === "Enter" &&
       !e.ctrlKey &&
       !e.shiftKey &&

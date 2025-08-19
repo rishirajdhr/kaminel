@@ -25,10 +25,14 @@ export function useGame(gameId: number) {
       if (model == null) {
         throw new Error("No model found");
       }
-      const result = model.run(command);
+      const sanitizedCommand = command.trim();
+      if (sanitizedCommand === "") {
+        throw new Error("Received blank string as command");
+      }
+      const result = model.run(sanitizedCommand);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { from: "player", content: command },
+        { from: "player", content: sanitizedCommand },
         { from: "system", content: result.message },
       ]);
       return result;
