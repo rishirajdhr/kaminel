@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kaminel
 
-## Getting Started
+> A web-based engine for creating text adventure games.
 
-First, run the development server:
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [pnpm](https://pnpm.io/) (v8 or higher)
+- [Docker](https://www.docker.com/) and Docker Compose
+- [Git](https://git-scm.com/)
+
+## Local Development Setup
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/rishirajdhr/kaminel.git
+cd kaminel
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Environment Configuration
 
-## Learn More
+Create a `.env.development` file in the root directory and add the
+following environment variables:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+DATABASE_URL="postgresql://nalase:protect_omega@localhost:5432/kaminel"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Start the Application
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run the following command:
 
-## Deploy on Vercel
+```bash
+pnpm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This command will:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Start the PostgreSQL container
+- Push the database schema
+- Seed the database with initial data
+- Start the Next.js development server
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+### Stopping the Database
+
+At the end of the development session, run the following command to stop the
+PostgreSQL container:
+
+```bash
+pnpm run db:stop
+```
+
+### Reseeding the Database
+
+If you need to re-seed the database, run the following command:
+
+```bash
+pnpm run db:seed
+```
