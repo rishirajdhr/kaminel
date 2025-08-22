@@ -1,0 +1,12 @@
+name: kaminel
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_kaminel_local
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nalase
+      POSTGRES_PASSWORD: protect_omega
+      POSTGRES_DB: kaminel
+    ports:
+      - "5432:5432"
