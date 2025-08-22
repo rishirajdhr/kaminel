@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-config({ path: ".env.local" });
+config({ path: ".env.development" });
 
 declare global {
   // eslint-disable-next-line no-var
