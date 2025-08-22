@@ -33,7 +33,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check for linting errors
-        run: pnpm run lint -- --max-warnings=0
+        run: pnpm run lint --max-warnings=0
 
       - name: Check formatting
         run: pnpm run format:check
