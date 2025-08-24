@@ -18,3 +18,12 @@ interface Describable extends Behavior {
   /** The description of the entity. */
   description: string;
 }
+
+/** Defines the navigable directions available in the game.  */
+const Directions = ["north", "south", "east", "west"] as const;
+
+/** Represents a navigable direction in the game. */
+type Direction = (typeof Directions)[number];
+
+/** Makes an entity navigable and connects it to other navigable entities. */
+interface Navigable extends Behavior, Record<Direction, number | null> {}
