@@ -25,7 +25,10 @@ export const directions = ["north", "south", "east", "west"] as const;
 /** Represents a navigable direction in the game. */
 export type Direction = (typeof directions)[number];
 
-/** Makes an entity navigable and connects it to other navigable entities. */
+/**
+ * Makes an entity navigable and connects it to other navigable entities. Each
+ * direction points to the navigable ID of the connected entity, if it exists.
+ */
 export interface Navigable extends Behavior, Record<Direction, number | null> {
   /** `true` if the game starts at this navigable, `false` otherwise. */
   isEntryPoint: boolean;
