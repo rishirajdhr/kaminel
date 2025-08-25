@@ -1,5 +1,5 @@
 /** Represents the properties present on all behaviors in the game. */
-interface Behavior {
+export interface Behavior {
   /** The behavior unique ID. */
   id: number;
 
@@ -11,7 +11,7 @@ interface Behavior {
 }
 
 /** Provides a game entity with human-readable identifiers (e.g. name). */
-interface Describable extends Behavior {
+export interface Describable extends Behavior {
   /** The name of the entity. */
   name: string;
 
@@ -20,10 +20,10 @@ interface Describable extends Behavior {
 }
 
 /** Defines the navigable directions available in the game.  */
-const Directions = ["north", "south", "east", "west"] as const;
+export const directions = ["north", "south", "east", "west"] as const;
 
 /** Represents a navigable direction in the game. */
-type Direction = (typeof Directions)[number];
+export type Direction = (typeof directions)[number];
 
 /** Makes an entity navigable and connects it to other navigable entities. */
-interface Navigable extends Behavior, Record<Direction, number | null> {}
+export interface Navigable extends Behavior, Record<Direction, number | null> {}
