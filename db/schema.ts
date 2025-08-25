@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
-import { pgTable, bigint, timestamp, text } from "drizzle-orm/pg-core";
+import { pgTable, bigint, boolean, timestamp, text } from "drizzle-orm/pg-core";
 
 //#region ===== TABLES =====
 
@@ -82,6 +82,7 @@ export const navigables = pgTable("navigables", {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+  isEntryPoint: boolean("is_entry_point").default(false).notNull(),
 });
 
 //#endregion
