@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { GameModel } from "./model";
+import { GameModel } from "@/game/model";
+import { getGameGraph } from "./api";
 
 type Message = { from: "player" | "system"; content: string };
 
@@ -9,8 +10,8 @@ export function useGame(gameId: number) {
 
   useEffect(() => {
     async function setupGameModel() {
-      const gameModel = new GameModel(gameId);
-      await gameModel.init();
+      const graph = await getGameGraph(gameId);
+      const gameModel = new GameModel(graph);
       setModel(gameModel);
       return gameModel;
     }
@@ -26,7 +27,7 @@ export function useGame(gameId: number) {
         ]);
       });
     }
-  }, []);
+  }, [gameId]);
 
   const handleCommand = useCallback(
     (command: string) => {
