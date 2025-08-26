@@ -147,7 +147,6 @@ it("executes valid command successfully", () => {
   expect(model.currentLocation).toBe(windTornPlaza.id);
 
   result = moveCommand.execute("   MoVe eaST ");
-  console.log(result);
   expect(result.ok).toBe(true);
   expect(model.currentLocation).toBe(transitTunnel.id);
 });
