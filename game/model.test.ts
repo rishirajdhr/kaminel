@@ -1,6 +1,7 @@
 import { Describable, directions, Navigable } from "./behaviors";
 import { GameModel } from "./model";
 import { Graph } from "./types";
+import { LookCommand, MoveCommand } from "./commands";
 
 const GAME_ID = 57;
 const GAME_NAME = "The Reverberations of Rebellion";
@@ -265,4 +266,47 @@ it("initializes current location to entry point if present", () => {
   const graph = createGraph(entities);
   const model = new GameModel(graph);
   expect(model.currentLocation).toBe(windTornPlaza.id);
+});
+
+it("invokes LOOK command correctly", () => {
+  const executeMock = jest
+    .spyOn(LookCommand.prototype, "execute")
+    .mockReturnValue({ ok: true, message: "Intercepted LOOK command" });
+  const graph = createGraph([windTornPlaza]);
+  const model = new GameModel(graph);
+
+  const lookCommands = ["  Look ", "look ", " LOOK", " lOoK "];
+  lookCommands.forEach((command, index) => {
+    model.run(command);
+    expect(executeMock).toHaveBeenCalledTimes(index + 1);
+    expect(executeMock).toHaveBeenCalledWith(command);
+  });
+});
+
+it("invokes MOVE command correctly", () => {
+  const executeMock = jest
+    .spyOn(MoveCommand.prototype, "execute")
+    .mockReturnValue({ ok: true, message: "Intercepted MOVE command" });
+  const graph = createGraph([windTornPlaza]);
+  const model = new GameModel(graph);
+
+  const moveCommands = [
+    "  Move North ",
+    "move east ",
+    " MOVE WEST",
+    " moVE soUth ",
+  ];
+  moveCommands.forEach((command, index) => {
+    model.run(command);
+    expect(executeMock).toHaveBeenCalledTimes(index + 1);
+    expect(executeMock).toHaveBeenCalledWith(command);
+  });
+});
+
+it("handles an unknown command correctly", () => {
+  const graph = createGraph([windTornPlaza]);
+  const model = new GameModel(graph);
+  const result = model.run("not-a-command");
+  expect(result.ok).toBe(false);
+  expect(result.message).toBe("Unknown command: not-a-command");
 });
