@@ -17,3 +17,5 @@ export type Graph = {
   /** The navigables linked to the game. */
   navigables: Array<Navigable>;
 };
+
+export type Game = Pick<Graph, "id" | "name" | "description">;
