@@ -3,4 +3,5 @@
  */
 export const verbs = {
   LOOK: "look",
-};
+  MOVE: "move",
+} as const;
