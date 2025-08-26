@@ -96,7 +96,7 @@ function createGraph(entities: Entity[]): Graph {
   });
 
   return {
-    gameId: GAME_ID,
+    id: GAME_ID,
     name: GAME_NAME,
     description: GAME_DESCRIPTION,
     describables,

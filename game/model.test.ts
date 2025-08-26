@@ -126,7 +126,7 @@ const observationDeck: Entity = {
 
 function createGraph(entities: Entity[]): Graph {
   return {
-    gameId: GAME_ID,
+    id: GAME_ID,
     name: GAME_NAME,
     description: GAME_DESCRIPTION,
     describables: entities.map((e) => e.describable!),
@@ -143,7 +143,7 @@ it("sets game ID correctly", () => {
     observationDeck,
   ]);
   const model = new GameModel(graph);
-  expect(model.gameId).toBe(graph.gameId);
+  expect(model.gameId).toBe(graph.id);
 });
 
 it("sets name correctly", () => {

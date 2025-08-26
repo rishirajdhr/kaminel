@@ -37,7 +37,7 @@ export class GameModel {
    * @param graph the graph of the game
    */
   constructor(graph: Graph) {
-    this.gameId = graph.gameId;
+    this.gameId = graph.id;
     this.name = graph.name;
     this.description = graph.description;
     this.describables = new Map(graph.describables.map((d) => [d.entityId, d]));
