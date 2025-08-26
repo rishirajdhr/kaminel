@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Game } from "@/features/games/types";
+import { Game } from "@/game/types";
 import { Room } from "@/features/rooms/types";
 import { updateGameStartRoom } from "@/features/games/actions";
 import { LoaderCircle } from "lucide-react";
@@ -19,7 +19,7 @@ export function StartRoomBadge(props: { game: Game; room: Room }) {
     }
   }
 
-  return props.game.startRoomId === props.room.id ? (
+  return props.room.navigable.isEntryPoint ? (
     <Button
       variant="secondary"
       className="rounded-full bg-green-100 text-sm text-green-800 hover:bg-green-100"

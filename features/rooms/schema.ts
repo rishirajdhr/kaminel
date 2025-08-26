@@ -43,7 +43,7 @@ export const exitConfigSchema = z.object({
   direction: z.enum(directions),
 
   /** The exit destination ID if it exists, `null` otherwise. */
-  destinationId: entitySchema.shape.id,
+  destinationId: entitySchema.shape.id.nullable(),
 
   /** `true` if the exit can loop back into the room, `false` otherwise. */
   loops: z.boolean().optional(),

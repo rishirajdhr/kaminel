@@ -27,9 +27,11 @@ export default function AddRoom() {
   const form = useForm<NewRoom>({
     resolver: zodResolver(newRoomSchema),
     defaultValues: {
-      name: "",
-      description: "",
       gameId: Number.parseInt(params.gameId),
+      describable: {
+        name: "",
+        description: "",
+      },
     },
   });
 
@@ -57,7 +59,7 @@ export default function AddRoom() {
           >
             <FormField
               control={form.control}
-              name="name"
+              name="describable.name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Room Name</FormLabel>
@@ -70,7 +72,7 @@ export default function AddRoom() {
             ></FormField>
             <FormField
               control={form.control}
-              name="description"
+              name="describable.description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Room Description</FormLabel>

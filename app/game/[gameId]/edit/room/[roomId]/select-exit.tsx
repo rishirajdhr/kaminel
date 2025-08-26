@@ -13,7 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateRoomExit } from "@/features/rooms/actions";
-import type { Direction, Room } from "@/features/rooms/types";
+import type { Room } from "@/features/rooms/types";
+import type { Direction } from "@/game/behaviors";
 
 export type Props = {
   roomId: number;
@@ -85,7 +86,7 @@ export function SelectExit(props: Props) {
           <SelectContent>
             {props.optionsForDestination.map((room) => (
               <SelectItem key={room.id} value={room.id.toString()}>
-                {room.name}
+                {room.describable.name}
               </SelectItem>
             ))}
           </SelectContent>
