@@ -1,5 +1,5 @@
 import { gameGraphSchema } from "./schema";
-import { GameGraph } from "./types";
+import { Graph } from "@/game/types";
 
 /**
  * Fetch the graph for a game by its ID.
@@ -10,7 +10,7 @@ import { GameGraph } from "./types";
  * @throws If no corresponding game is found or a database operation fails
  * @throws {ZodError} If the response data fails schema validation
  */
-export async function getGameGraph(gameId: number): Promise<GameGraph> {
+export async function getGameGraph(gameId: number): Promise<Graph> {
   const response = await fetch(`/api/game/${gameId}/graph`);
   const json = await response.json();
   if (!response.ok) {
