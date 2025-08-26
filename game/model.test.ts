@@ -27,9 +27,9 @@ const windTornPlaza: Entity = {
     id: 37,
     entityId: 92,
     gameId: GAME_ID,
-    north: 46, // Shuttered Archive
+    north: null,
     south: null,
-    east: 48, // Transit Tunnel
+    east: null,
     west: null,
     isEntryPoint: false,
   },
@@ -50,7 +50,7 @@ const shutteredArchive: Entity = {
     entityId: 28,
     gameId: GAME_ID,
     north: null,
-    south: 37, // Wind-torn Plaza
+    south: null,
     east: null,
     west: null,
     isEntryPoint: false,
@@ -71,10 +71,10 @@ const transitTunnel: Entity = {
     id: 48,
     entityId: 93,
     gameId: GAME_ID,
-    north: 50, // Broadcast Spire
+    north: null,
     south: null,
-    east: 52, // Observation Deck
-    west: 37, // Wind-torn Plaza
+    east: null,
+    west: null,
     isEntryPoint: false,
   },
 };
@@ -94,7 +94,7 @@ const broadcastSpire: Entity = {
     entityId: 94,
     gameId: GAME_ID,
     north: null,
-    south: 48, // Transit Tunnel
+    south: null,
     east: null,
     west: null,
     isEntryPoint: false,
@@ -118,7 +118,7 @@ const observationDeck: Entity = {
     north: null,
     south: null,
     east: null,
-    west: 48, // Transit Tunnel
+    west: null,
     isEntryPoint: false,
   },
 };
@@ -193,12 +193,36 @@ it("maps entities to their describables correctly", () => {
 });
 
 it("maps entities to their navigables correctly", () => {
-  const entities = [
-    windTornPlaza,
-    shutteredArchive,
-    transitTunnel,
-    broadcastSpire,
-    observationDeck,
+  const entities: Entity[] = [
+    {
+      ...windTornPlaza,
+      navigable: {
+        ...windTornPlaza.navigable!,
+        north: shutteredArchive.id,
+        east: transitTunnel.id,
+      },
+    },
+    {
+      ...shutteredArchive,
+      navigable: { ...shutteredArchive.navigable!, south: windTornPlaza.id },
+    },
+    {
+      ...transitTunnel,
+      navigable: {
+        ...transitTunnel.navigable!,
+        north: broadcastSpire.id,
+        east: observationDeck.id,
+        west: windTornPlaza.id,
+      },
+    },
+    {
+      ...broadcastSpire,
+      navigable: { ...broadcastSpire.navigable!, south: transitTunnel.id },
+    },
+    {
+      ...observationDeck,
+      navigable: { ...observationDeck.navigable!, west: transitTunnel.id },
+    },
   ];
   const graph = createGraph(entities);
   const model = new GameModel(graph);
