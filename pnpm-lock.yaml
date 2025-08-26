@@ -41,6 +41,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dedent:
+        specifier: ^1.6.0
+        version: 1.6.0
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
