@@ -1,5 +1,6 @@
 import { getRoomById, getRoomExitCandidates } from "@/features/rooms/services";
-import type { Direction, Exit, Room } from "@/features/rooms/types";
+import type { Room } from "@/features/rooms/types";
+import { Direction } from "@/game/behaviors";
 import { SelectExit } from "./select-exit";
 import { getGameById } from "@/features/games/services";
 import { StartRoomBadge } from "./start-room-badge";
@@ -31,13 +32,13 @@ export default async function RoomCard({
         <div className="text-sm font-semibold text-indigo-600">Room</div>
         <div className="flex w-full flex-row items-center justify-between pt-1 pb-2">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-            {room.name}
+            {room.describable.name}
           </h1>
           <StartRoomBadge game={game} room={room} />
         </div>
         <div>
           <p className="text-base font-light tracking-tight text-gray-700">
-            {room.description}
+            {room.describable.description}
           </p>
         </div>
         <div className="mt-2 w-full">
@@ -52,13 +53,12 @@ export default async function RoomCard({
 }
 
 async function RoomExit(props: { room: Room; direction: Direction }) {
-  const exit: Exit = `${props.direction}Exit`;
   const candidates = await getRoomExitCandidates(
     props.room.gameId,
     props.room.id,
     {
       direction: props.direction,
-      destinationId: props.room[exit],
+      destinationId: props.room.navigable[props.direction],
     }
   );
 
@@ -66,7 +66,7 @@ async function RoomExit(props: { room: Room; direction: Direction }) {
     <SelectExit
       roomId={props.room.id}
       direction={props.direction}
-      originalDestinationId={props.room[exit]}
+      originalDestinationId={props.room.navigable[props.direction]}
       optionsForDestination={candidates}
     />
   );

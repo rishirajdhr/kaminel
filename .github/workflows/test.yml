@@ -1,4 +1,4 @@
-name: Lint Project
+name: Run Project Tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,8 +28,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check for linting errors
-        run: pnpm run lint --max-warnings=0
-
-      - name: Check formatting
-        run: pnpm run format:check
+      - name: Run tests
+        run: pnpm run test

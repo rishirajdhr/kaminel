@@ -1,8 +1,8 @@
-import type { Direction, Exit } from "./types";
+import type { Direction } from "@/game/behaviors";
 
-export const entranceByDirection: Record<Direction, Exit> = {
-  north: "southExit",
-  south: "northExit",
-  east: "westExit",
-  west: "eastExit",
+export const entranceByDirection: Record<Direction, Direction> = {
+  north: "south",
+  south: "north",
+  east: "west",
+  west: "east",
 };

@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { setGameStartRoom } from "./services";
-import { Game } from "./types";
+import { setGameEntryPoint } from "./services";
+import { Game } from "@/game/types";
 
 /**
  * Update the start room for a game.
@@ -17,7 +17,7 @@ export async function updateGameStartRoom(
   gameId: number,
   roomId: number
 ): Promise<Game | undefined> {
-  const game = await setGameStartRoom(gameId, roomId);
+  const game = await setGameEntryPoint(gameId, roomId);
   if (game !== undefined) {
     revalidatePath(`/game/${gameId}`);
     revalidatePath(`/game/${gameId}/room/${roomId}`);

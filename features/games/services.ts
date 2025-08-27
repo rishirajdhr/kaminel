@@ -1,7 +1,7 @@
 import { db } from "@/db";
-import { Game, GameGraph } from "./types";
-import { games } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { Game, Graph } from "@/game/types";
+import { navigables } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
 
 /**
  * Get all the games that exist.
@@ -34,46 +34,43 @@ export async function getGameById(gameId: number): Promise<Game | undefined> {
  */
 export async function getGameGraphById(
   gameId: number
-): Promise<GameGraph | undefined> {
+): Promise<Graph | undefined> {
   const gameGraph = await db.query.games.findFirst({
     where: (games, { eq }) => eq(games.id, gameId),
     with: {
-      rooms: {
-        with: { entities: true },
-      },
+      describables: true,
+      navigables: true,
     },
   });
   return gameGraph;
 }
 
 /**
- * Set the start room for a game.
+ * Set the entry point for a game.
  *
  * @param gameId the game ID
- * @param roomId the room ID
+ * @param entryPointId the entry point entity ID
  * @returns the updated game if the operation succeeds, `undefined` otherwise
  */
-export async function setGameStartRoom(
+export async function setGameEntryPoint(
   gameId: number,
-  roomId: number
+  entryPointId: number
 ): Promise<Game | undefined> {
-  const room = await db.query.rooms.findFirst({
-    where: (rooms, { and, eq }) =>
-      and(eq(rooms.gameId, gameId), eq(rooms.id, roomId)),
+  const prevEntryPoint = await db.query.navigables.findFirst({
+    where: (navigables, { and, eq }) =>
+      and(eq(navigables.gameId, gameId), eq(navigables.isEntryPoint, true)),
   });
-  if (room === undefined) {
-    return undefined;
+  if (prevEntryPoint !== undefined) {
+    await db
+      .update(navigables)
+      .set({ isEntryPoint: false })
+      .where(eq(navigables.id, prevEntryPoint.id));
   }
-
-  const game = await getGameById(gameId);
-  if (game === undefined) {
-    return undefined;
-  }
-
-  const [updatedGame] = await db
-    .update(games)
-    .set({ startRoomId: roomId })
-    .where(eq(games.id, gameId))
-    .returning();
-  return updatedGame;
+  await db
+    .update(navigables)
+    .set({ isEntryPoint: true })
+    .where(
+      and(eq(navigables.gameId, gameId), eq(navigables.entityId, entryPointId))
+    );
+  return getGameById(gameId);
 }

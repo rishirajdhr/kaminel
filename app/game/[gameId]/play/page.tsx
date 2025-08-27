@@ -30,11 +30,7 @@ export default function PlayPage() {
     return <div>Model does not exist</div>;
   }
 
-  if (game.model.status === "pending") {
-    return <div>Loading...</div>;
-  }
-
-  if (game.model.currentRoom === null) {
+  if (game.model.currentLocation === null) {
     return (
       <div className="grid h-full w-full place-items-center">
         <div className="relative flex w-xl flex-col items-start gap-4 overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-emerald-600">
