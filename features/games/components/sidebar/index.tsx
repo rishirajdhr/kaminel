@@ -1,79 +1,54 @@
-import Link, { LinkProps } from "next/link";
+"use client";
+
+import { Gamepad2, MapIcon, MapPin, Plus } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { Category, CategoryItem } from "./types";
+import { CategoryLink } from "./category-link";
+import { CategoryItemLink } from "./category-item-link";
+import { Button } from "@/components/ui/button";
 
 type Props = {
-  primary: Array<{
-    label: string;
-    icon: React.ReactNode;
-    href: LinkProps["href"];
-  }>;
-  secondary: Array<{ label: string; href: LinkProps["href"] }>;
+  secondary: CategoryItem[];
 };
 
-export async function GameSidebar(props: Props) {
+export function GameSidebar(props: Props) {
+  const params = useParams();
+  if (!("gameId" in params)) {
+    throw new Error(
+      "GameSidebar cannot be rendered outside a game-specific route"
+    );
+  }
+
+  const gameId = params.gameId;
+  const categories: Category[] = [
+    { label: "Game", icon: Gamepad2, href: `/game/${gameId}/edit/home` },
+    { label: "Map", icon: MapIcon, href: `/game/${gameId}/edit/map` },
+    { label: "Rooms", icon: MapPin, href: `/game/${gameId}/edit/room` },
+  ];
+
   return (
-    <aside className="flex flex-row items-stretch">
-      <nav className="h-full w-16">
-        {props.primary.map((category) => (
-          <Link
-            className="flex size-16 flex-col gap-1 p-2"
-            href={category.href}
-          >
-            <span>{category.icon}</span>
-            <span>{category.label}</span>
-          </Link>
+    <aside className="flex flex-none flex-row items-stretch">
+      <nav className="flex h-full w-[74px] flex-col overflow-x-hidden border-r border-[#dedede] bg-[#fafafa]">
+        {categories.map((category) => (
+          <CategoryLink key={category.label} category={category} />
         ))}
       </nav>
-      <nav className="h-full w-48">
-        {props.secondary.map((entry) => (
-          <Link className="h-12 w-48" href={entry.href}>
-            {entry.label}
-          </Link>
+      <nav className="flex h-full w-48 flex-col overflow-x-hidden border-r border-[#dedede] bg-[#fafafa]">
+        <div className="flex h-20 w-48 items-center justify-center">
+          <Button asChild>
+            <Link href={`/game/${gameId}/edit/room/new`}>
+              <span>
+                <Plus />
+              </span>
+              <span>New Game</span>
+            </Link>
+          </Button>
+        </div>
+        {props.secondary.map((item) => (
+          <CategoryItemLink key={item.label} item={item} />
         ))}
       </nav>
     </aside>
   );
 }
-
-// return (
-//   <Sidebar variant={props.variant}>
-//     <SidebarHeader>
-//       <div className="flex flex-col items-center gap-2">
-//         <Link href="/">
-//           <span className="inline-block text-xl font-semibold tracking-tight">
-//             Adventure Game Engine
-//           </span>
-//         </Link>
-//         <div className="flex flex-row gap-2">
-//           <Button variant="outline" size="sm" asChild>
-//             <Link className="" href={`/game/${props.gameId}/room/new`}>
-//               <Plus className="stroke-3" />
-//               <span className="">Add Room</span>
-//             </Link>
-//           </Button>
-//           <Button variant="outline" size="sm" asChild>
-//             <Link className="" href={`/game/${props.gameId}/entity/new`}>
-//               <Plus className="stroke-3" />{" "}
-//               <span className="">Add Entity</span>
-//             </Link>
-//           </Button>
-//         </div>
-//       </div>
-//     </SidebarHeader>
-//     <SidebarContent>
-//       <SidebarGroup>
-//         <SidebarGroupLabel>Rooms</SidebarGroupLabel>
-//         <SidebarGroupAction title="Game Landing Page" asChild>
-//           <Link href={`/game/${props.gameId}`}>
-//             <House className="text-gray-600" />{" "}
-//             <span className="sr-only">Game Landing Page</span>
-//           </Link>
-//         </SidebarGroupAction>
-//         <SidebarMenu>
-//           {rooms.map((room) => (
-//             <RoomItem key={room.id} room={room} />
-//           ))}
-//         </SidebarMenu>
-//       </SidebarGroup>
-//     </SidebarContent>
-//   </Sidebar>
-// );
