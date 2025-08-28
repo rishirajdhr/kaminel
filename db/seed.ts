@@ -249,7 +249,7 @@ async function seedDb() {
       .values({
         name: game.name,
         description: game.description,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .returning({ gameId: schema.games.id })
       .onConflictDoNothing();
@@ -260,7 +260,7 @@ async function seedDb() {
       console.log(`  🏠 Creating room: ${room.name}`);
       const [{ roomId }] = await db
         .insert(schema.entities)
-        .values({ gameId, updatedAt: new Date() })
+        .values({ gameId, updatedAt: new Date().toISOString() })
         .returning({ roomId: schema.entities.id })
         .onConflictDoNothing();
       await db
@@ -270,7 +270,7 @@ async function seedDb() {
           entityId: roomId,
           name: room.name,
           description: room.description,
-          updatedAt: new Date(),
+          updatedAt: new Date().toISOString(),
         })
         .onConflictDoNothing();
       await db
@@ -278,7 +278,7 @@ async function seedDb() {
         .values({
           gameId: gameId,
           entityId: roomId,
-          updatedAt: new Date(),
+          updatedAt: new Date().toISOString(),
         })
         .onConflictDoNothing();
 
@@ -286,7 +286,7 @@ async function seedDb() {
         console.log(`    👾 Adding entity: ${entity.name}`);
         const [{ entityId }] = await db
           .insert(schema.entities)
-          .values({ gameId, updatedAt: new Date() })
+          .values({ gameId, updatedAt: new Date().toISOString() })
           .returning({ entityId: schema.entities.id })
           .onConflictDoNothing();
         await db.insert(schema.describables).values({
@@ -294,7 +294,7 @@ async function seedDb() {
           entityId: entityId,
           name: entity.name,
           description: entity.description,
-          updatedAt: new Date(),
+          updatedAt: new Date().toISOString(),
         });
       }
       console.log(

@@ -4,12 +4,12 @@ import { pgTable, bigint, boolean, timestamp, text } from "drizzle-orm/pg-core";
 //#region ===== TABLES =====
 
 const timestamps = {
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .defaultNow()
     .notNull(),
   updatedAt: timestamp("updated_at", {
     withTimezone: true,
-    mode: "date",
+    mode: "string",
   }).notNull(),
 };
 
