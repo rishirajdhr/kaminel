@@ -78,9 +78,9 @@ export function SelectExit(props: Props) {
   return (
     <div className="space-y-2 py-2">
       <Label htmlFor={selectConfig.id}>{selectConfig.label}</Label>
-      <div className="flex flex-row gap-4">
+      <div className="flex w-40 flex-col items-end gap-2">
         <Select value={destinationId} onValueChange={setDestinationId}>
-          <SelectTrigger id={selectConfig.id} className="w-64">
+          <SelectTrigger id={selectConfig.id} className="w-40">
             <SelectValue placeholder="Select a Room" />
           </SelectTrigger>
           <SelectContent>

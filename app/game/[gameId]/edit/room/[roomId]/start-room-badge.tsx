@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Game } from "@/game/types";
 import { Room } from "@/features/rooms/types";
 import { updateGameStartRoom } from "@/features/games/actions";
-import { LoaderCircle } from "lucide-react";
+import { Check, DoorOpen, LoaderCircle } from "lucide-react";
 
 export function StartRoomBadge(props: { game: Game; room: Room }) {
   const [isMarking, setIsMarking] = useState(false);
@@ -20,28 +20,32 @@ export function StartRoomBadge(props: { game: Game; room: Room }) {
   }
 
   return props.room.navigable.isEntryPoint ? (
-    <Button
-      variant="secondary"
-      className="rounded-full bg-green-100 text-sm text-green-800 hover:bg-green-100"
-      asChild
-    >
-      <span>Starting Room</span>
+    <Button variant="outline" asChild>
+      <span>
+        <Check />
+        <span>Starting Room</span>
+      </span>
     </Button>
   ) : (
     <Button
+      className="cursor-pointer"
       disabled={isMarking}
       onClick={handleClick}
-      className="rounded-full"
       variant="outline"
     >
-      {isMarking ? (
-        <span className="flex flex-row items-center gap-2">
-          <LoaderCircle className="text-muted-foreground size-4 animate-spin" />
-          <span>Marking...</span>
-        </span>
-      ) : (
-        <span>Mark as Start Room</span>
-      )}
+      <span className="flex flex-row items-center gap-2">
+        {isMarking ? (
+          <>
+            <LoaderCircle className="text-muted-foreground size-4 animate-spin" />
+            <span>Marking...</span>
+          </>
+        ) : (
+          <>
+            <DoorOpen />
+            <span>Mark as Start Room</span>
+          </>
+        )}
+      </span>
     </Button>
   );
 }
