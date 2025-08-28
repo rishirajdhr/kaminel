@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db, client } from "./index";
 import * as schema from "./schema";
 import { directions } from "@/game/behaviors";
@@ -305,7 +305,11 @@ async function seedDb() {
     console.log("🔗 Connecting room exits...");
     for (const room of game.rooms) {
       const roomDescribable = await db.query.describables.findFirst({
-        where: (describables, { eq }) => eq(describables.name, room.name),
+        where: (describables, { and, eq }) =>
+          and(
+            eq(describables.gameId, gameId),
+            eq(describables.name, room.name)
+          ),
       });
       if (roomDescribable === undefined) continue;
 
@@ -313,34 +317,46 @@ async function seedDb() {
         const destinationName = room.exits[direction];
         if (destinationName !== null) {
           const destinationDescribable = await db.query.describables.findFirst({
-            where: (describables, { eq }) =>
-              eq(describables.name, destinationName),
+            where: (describables, { and, eq }) =>
+              and(
+                eq(describables.gameId, gameId),
+                eq(describables.name, destinationName)
+              ),
           });
           if (destinationDescribable === undefined) {
             console.warn(
               `⚠️  Error encountered when assigning ${direction} exit for ${room.name}. Could not find a room with the name ${destinationName}`
             );
-          } else {
-            console.log(
-              `    🔀 Connecting ${room.name} ${direction} exit → ${destinationName}`
-            );
-
-            const destinationNavigable = await db.query.navigables.findFirst({
-              where: (navigables, { eq }) =>
-                eq(navigables.entityId, destinationDescribable.entityId),
-            });
-            if (destinationNavigable === undefined) {
-              console.warn(
-                `⚠️  Error encountered when assigning ${direction} exit for ${room.name}. Could not find the navigable for the room with the name ${destinationName}`
-              );
-              continue;
-            }
-
-            await db
-              .update(schema.navigables)
-              .set({ [direction]: destinationNavigable.id })
-              .where(eq(schema.navigables.entityId, roomDescribable.entityId));
+            continue;
           }
+
+          console.log(
+            `    🔀 Connecting ${room.name} ${direction} exit → ${destinationName}`
+          );
+
+          const destinationNavigable = await db.query.navigables.findFirst({
+            where: (navigables, { and, eq }) =>
+              and(
+                eq(navigables.gameId, gameId),
+                eq(navigables.entityId, destinationDescribable.entityId)
+              ),
+          });
+          if (destinationNavigable === undefined) {
+            console.warn(
+              `⚠️  Error encountered when assigning ${direction} exit for ${room.name}. Could not find the navigable for the room with the name ${destinationName}`
+            );
+            continue;
+          }
+
+          await db
+            .update(schema.navigables)
+            .set({ [direction]: destinationNavigable.entityId })
+            .where(
+              and(
+                eq(schema.navigables.gameId, gameId),
+                eq(schema.navigables.entityId, roomDescribable.entityId)
+              )
+            );
         }
       }
     }
