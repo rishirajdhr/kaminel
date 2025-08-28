@@ -19,7 +19,7 @@ export async function addRoom(newRoom: NewRoom) {
   const roomToInsert = newRoomSchema.parse(newRoom);
   const room = await createRoom(roomToInsert);
   revalidatePath(`/game/${room.gameId}`);
-  redirect(`/game/${room.gameId}/room/${room.id}`);
+  redirect(`/game/${room.gameId}/edit/room/${room.id}`);
 }
 
 /**
