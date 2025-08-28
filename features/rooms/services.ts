@@ -22,7 +22,7 @@ export async function createRoom(newRoom: NewRoom): Promise<Room> {
 
   const [entity] = await db
     .insert(entities)
-    .values({ gameId: game.id, updatedAt: new Date() })
+    .values({ gameId: game.id, updatedAt: new Date().toISOString() })
     .returning();
   const [[describable], [navigable]] = await Promise.all([
     db
@@ -31,7 +31,7 @@ export async function createRoom(newRoom: NewRoom): Promise<Room> {
         ...newRoom.describable,
         entityId: entity.id,
         gameId: game.id,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .returning(),
     db
@@ -40,7 +40,7 @@ export async function createRoom(newRoom: NewRoom): Promise<Room> {
         ...newRoom.navigable,
         entityId: entity.id,
         gameId: game.id,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .returning(),
   ]);

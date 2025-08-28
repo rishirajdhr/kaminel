@@ -27,25 +27,35 @@ export default async function RoomCard({
   }
 
   return (
-    <div className="grid h-full w-full place-items-center">
-      <div className="relative flex w-lg flex-col items-start overflow-hidden rounded-md p-4 pl-6 shadow before:absolute before:top-0 before:left-0 before:h-full before:w-2 before:bg-indigo-600">
-        <div className="text-sm font-semibold text-indigo-600">Room</div>
-        <div className="flex w-full flex-row items-center justify-between pt-1 pb-2">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-            {room.describable.name}
-          </h1>
-          <StartRoomBadge game={game} room={room} />
-        </div>
-        <div>
-          <p className="text-base font-light tracking-tight text-gray-700">
-            {room.describable.description}
-          </p>
-        </div>
-        <div className="mt-2 w-full">
-          <RoomExit room={room} direction="north" />
-          <RoomExit room={room} direction="south" />
-          <RoomExit room={room} direction="east" />
-          <RoomExit room={room} direction="west" />
+    <div className="flex h-full w-full items-start justify-center overflow-y-auto p-10">
+      <div className="flex w-2xl flex-col items-start gap-3.5">
+        <span className="bg-black px-3 py-1.5 text-sm tracking-tight text-white">
+          Room
+        </span>
+        <h1 className="text-6xl font-bold tracking-tight text-black">
+          {room.describable.name}
+        </h1>
+        <p className="font-light tracking-tight">
+          {room.describable.description}
+        </p>
+        <StartRoomBadge game={game} room={room} />
+        <h2 className="text-2xl font-medium tracking-tight">Exits</h2>
+        <div className="grid w-full grid-cols-3 grid-rows-3 items-center justify-items-center gap-2">
+          <div className="col-2 row-2 grid h-full w-full place-items-center rounded-md border border-dashed border-[#adadad]">
+            <span>{room.describable.name}</span>
+          </div>
+          <div className="col-2 row-1">
+            <RoomExit room={room} direction="north" />
+          </div>
+          <div className="col-2 row-3">
+            <RoomExit room={room} direction="south" />
+          </div>
+          <div className="col-3 row-2">
+            <RoomExit room={room} direction="east" />
+          </div>
+          <div className="col-1 row-2">
+            <RoomExit room={room} direction="west" />
+          </div>
         </div>
       </div>
     </div>

@@ -21,11 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={spaceGrotesk.variable}>
-      <body className="antialiased">
-        <div className="flex min-h-screen items-center justify-center">
-          {children}
-        </div>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

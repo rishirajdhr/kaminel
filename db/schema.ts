@@ -1,16 +1,15 @@
 import { relations } from "drizzle-orm";
-import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { pgTable, bigint, boolean, timestamp, text } from "drizzle-orm/pg-core";
 
 //#region ===== TABLES =====
 
 const timestamps = {
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .defaultNow()
     .notNull(),
   updatedAt: timestamp("updated_at", {
     withTimezone: true,
-    mode: "date",
+    mode: "string",
   }).notNull(),
 };
 
@@ -60,25 +59,25 @@ export const navigables = pgTable("navigables", {
   ...behaviorIds,
   north: bigint({ mode: "number" })
     .unique()
-    .references((): AnyPgColumn => navigables.id, {
+    .references(() => entities.id, {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
   south: bigint({ mode: "number" })
     .unique()
-    .references((): AnyPgColumn => navigables.id, {
+    .references(() => entities.id, {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
   east: bigint({ mode: "number" })
     .unique()
-    .references((): AnyPgColumn => navigables.id, {
+    .references(() => entities.id, {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
   west: bigint({ mode: "number" })
     .unique()
-    .references((): AnyPgColumn => navigables.id, {
+    .references(() => entities.id, {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
@@ -115,24 +114,24 @@ export const navigablesRelations = relations(navigables, ({ one }) => ({
     fields: [navigables.entityId],
     references: [entities.id],
   }),
-  northExit: one(navigables, {
+  northExit: one(entities, {
     fields: [navigables.north],
-    references: [navigables.id],
+    references: [entities.id],
     relationName: "north_exit",
   }),
-  southExit: one(navigables, {
+  southExit: one(entities, {
     fields: [navigables.south],
-    references: [navigables.id],
+    references: [entities.id],
     relationName: "south_exit",
   }),
-  eastExit: one(navigables, {
+  eastExit: one(entities, {
     fields: [navigables.east],
-    references: [navigables.id],
+    references: [entities.id],
     relationName: "east_exit",
   }),
-  westExit: one(navigables, {
+  westExit: one(entities, {
     fields: [navigables.west],
-    references: [navigables.id],
+    references: [entities.id],
     relationName: "west_exit",
   }),
 }));

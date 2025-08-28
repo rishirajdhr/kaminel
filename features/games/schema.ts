@@ -12,7 +12,10 @@ export const gameSchema = createSelectSchema(games);
 /** Validation schema for a describable. */
 export const describableSchema = createSelectSchema(describables);
 
-export const newDescribableSchema = createInsertSchema(describables).omit({
+export const newDescribableSchema = createInsertSchema(describables, {
+  name: (schema) => schema.min(1, "Name cannot be empty"),
+  description: (schema) => schema.min(1, "Description cannot be empty"),
+}).omit({
   updatedAt: true,
 });
 
